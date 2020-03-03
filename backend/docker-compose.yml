@@ -1,0 +1,23 @@
+version: '3'
+services:
+  backend_1:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ID=1
+      - PORT=8000
+  backend_2:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      - ID=2
+      - PORT=8001
+  backend_3:
+    build: .
+    ports:
+      - "8002:8002"
+    environment:
+      - ID=2
+      - PORT=8002

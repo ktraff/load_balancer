@@ -14,6 +14,12 @@ test:
 fmt:
 	go fmt ./...
 
+start_backend:
+	cd backend && docker-compose up --detach --remove-orphans
+
+stop_backend:
+	cd backend && docker-compose down
+
 run: build
 	BACKEND_1=http://localhost:8000 \
 	BACKEND_2=http://localhost:8001 \
