@@ -1,4 +1,4 @@
-.PHONY: build install test fmt start_backend stop_backend run
+.PHONY: build install test fmt start_backend stop_backend run push
 
 build:
 	rm -rf .bin
