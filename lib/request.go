@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -17,5 +18,5 @@ func NewRequest(http_req *http.Request) Request {
 }
 
 func (r *Request) String() string {
-	return "Blahkj"
+	return fmt.Sprintf("%v", r.http_req.URL)
 }

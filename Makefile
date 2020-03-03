@@ -1,15 +1,18 @@
 .PHONY: build test run
 
-GOPATH=`pwd`
-
 build:
-	GOPATH=${GOPATH} go build ./...
+	rm -rf .bin
+	mkdir .bin
+	cd .bin && go build ../src/github.com/ktraff/load_balancer/main.go
 
 install:
-	GOPATH=${GOPATH} go install ./...
+	go install src/github.com/ktraff/load_balancer/main.go
 
 test:
-	GOPATH=${GOPATH} go test ./...
+	go test ./...
 
 run: build
-	./bin/load_balancer
+	BACKEND_1=http://localhost:8000 \
+	BACKEND_2=http://localhost:8001 \
+	BACKEND_3=http://localhost:8002 \
+	./.bin/main

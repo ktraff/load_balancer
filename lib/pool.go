@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"container/heap"
+	"github.com/ktraff/load_balancer"
 )
 
 type Pool []*Worker
@@ -18,9 +19,11 @@ func NewBalancer(numWorkers int, requestBufferSize int) *Balancer {
 		pool: make(Pool, 0, numWorkers),
 		done: done,
 	}
-	for i := 0; i < numWorkers; i++ {
-		fmt.Println(fmt.Sprintf("Creating worker #%v", i + 1))
-		worker := NewWorker(requestBufferSize)
+	backends := load_balancer.GetBackends()
+	for i := 1; i <= numWorkers; i++ {
+		backend := (*backends)[(i - 1) % len(*backends)]
+		worker := NewWorker(i, requestBufferSize, backend)
+		fmt.Println(fmt.Sprintf("Creating # %v", worker))
 		heap.Push(&balancer.pool, &worker)
 		go worker.work(balancer.done)
 	}
@@ -35,7 +38,7 @@ func (b *Balancer) Balance(work chan *Request) {
 			fmt.Println(fmt.Sprintf("Dispatching request: %v", req))
             b.dispatch(req)
         case w := <-b.done:
-			fmt.Println(fmt.Sprintf("Finished request on worker %v", w))
+			fmt.Println(fmt.Sprintf("Finished request on %v", w))
 			b.completed(w)
 		}
     }
@@ -77,7 +80,7 @@ func (p Pool) Less(i, j int) bool {
 // Send a Request to a worker
 func (b *Balancer) dispatch(req *Request) {
 	least_loaded_worker := heap.Pop(&b.pool).(*Worker)
-	fmt.Println(fmt.Sprintf("Forwarding request %v to worker %v", req, least_loaded_worker))
+	fmt.Println(fmt.Sprintf("Dispatching request %v to %v", req, least_loaded_worker))
     least_loaded_worker.requests <- *req
     least_loaded_worker.pending++
     heap.Push(&b.pool, least_loaded_worker)

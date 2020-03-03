@@ -16,13 +16,7 @@ func main() {
     h1 := func(_ http.ResponseWriter, http_req *http.Request) {
         fmt.Println(fmt.Sprintf("Received request: %v", http_req))
         req := lib.NewRequest(http_req)
-
-        select {
-        case work_channel <- &req:
-            fmt.Println("sent req", req)
-        default:
-            fmt.Println("no message sent")
-        }
+        work_channel <- &req
 	}
 	http.HandleFunc("/", h1)
     fmt.Println("Serving on port 8080")
