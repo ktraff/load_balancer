@@ -48,7 +48,7 @@ func (w *Worker) forward_request(req *http.Request, requestor_chan chan http.Res
 		}
 	}()
 
-	url := fmt.Sprintf("%v/%v", w.backend.String(), req.URL.Path)
+	url := fmt.Sprintf("%v%v", w.backend.String(), req.URL.Path)
 	fmt.Println(fmt.Sprintf("Forwarding request: %v", url))
 	outgoing_req, err := http.NewRequest(req.Method, url, strings.NewReader(""))
 	if err != nil {
