@@ -11,6 +11,9 @@ install:
 test:
 	go test ./...
 
+fmt:
+	go fmt ./...
+
 run: build
 	BACKEND_1=http://localhost:8000 \
 	BACKEND_2=http://localhost:8001 \
