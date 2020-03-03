@@ -7,13 +7,13 @@ import (
 
 type Request struct {
 	http_req *http.Request
-    output chan http.Response
+	output   chan http.Response
 }
 
 func NewRequest(http_req *http.Request) Request {
 	return Request{
 		http_req: http_req,
-		output: make(chan http.Response),
+		output:   make(chan http.Response),
 	}
 }
 

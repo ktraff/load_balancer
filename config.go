@@ -11,7 +11,7 @@ type Configuration struct {
 }
 
 func Config() Configuration {
-	return Configuration {
+	return Configuration{
 		backends: GetBackends(),
 	}
 }
@@ -34,9 +34,9 @@ func GetBackends() *[]url.URL {
 // Checks for an existing environment variable.  If none exists,
 // return a default.
 func Getenv(key, fallback string) string {
-    value := os.Getenv(key)
-    if len(value) == 0 {
-        return fallback
-    }
-    return value
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
 }
