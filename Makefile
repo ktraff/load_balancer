@@ -1,5 +1,9 @@
 .PHONY: build install test fmt start_backend stop_backend run push
 
+WORKERS=100
+REQUESTS_PER_WORKER=5
+LOAD_REQUESTS=1000
+
 build:
 	rm -rf .bin
 	mkdir .bin
@@ -26,7 +30,10 @@ run: build
 	BACKEND_1=http://localhost:8000 \
 	BACKEND_2=http://localhost:8001 \
 	BACKEND_3=http://localhost:8002 \
-	./.bin/main $(WORKERS) $(REQUESTS)
+	./.bin/main $(WORKERS) $(REQUESTS_PER_WORKER)
 
 push: fmt
 	git push
+
+load_test:
+	ab -n $(LOAD_REQUESTS) -c 5 http://localhost:8080/
