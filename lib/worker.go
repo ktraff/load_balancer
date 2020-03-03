@@ -34,7 +34,7 @@ func (w *Worker) work(done chan *Worker) {
 	fmt.Println("Beginning work")
 	for {
 		req := <-w.requests
-		fmt.Println(fmt.Sprintf("Received a request: %v", req.http_req.URL.String()))
+		fmt.Println(fmt.Sprintf("Processing a request: %v", req.http_req.URL.String()))
 		go w.forward_request(req.http_req, req.output, done)
 	}
 }

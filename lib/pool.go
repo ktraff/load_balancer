@@ -14,12 +14,16 @@ type Balancer struct {
 }
 
 func NewBalancer(numWorkers int, requestBufferSize int) *Balancer {
+	fmt.Println(fmt.Sprintf("Creating balancers with %v workers (%v requests per worker)", numWorkers, requestBufferSize))
 	done := make(chan *Worker, numWorkers)
 	balancer := &Balancer{
 		pool: make(Pool, 0, numWorkers),
 		done: done,
 	}
 	backends := load_balancer.GetBackends()
+	if len(*backends) == 0 {
+		panic("No backends configured")
+	}
 	for i := 1; i <= numWorkers; i++ {
 		backend := (*backends)[(i-1)%len(*backends)]
 		worker := NewWorker(i, requestBufferSize, backend)

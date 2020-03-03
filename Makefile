@@ -18,4 +18,4 @@ run: build
 	BACKEND_1=http://localhost:8000 \
 	BACKEND_2=http://localhost:8001 \
 	BACKEND_3=http://localhost:8002 \
-	./.bin/main
+	./.bin/main $(WORKERS) $(REQUESTS)
