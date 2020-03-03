@@ -13,6 +13,8 @@ test:
 
 fmt:
 	go fmt ./...
+	git add .
+	git commit -m "formatting"
 
 start_backend:
 	cd backend && docker-compose up --detach --remove-orphans
@@ -25,3 +27,6 @@ run: build
 	BACKEND_2=http://localhost:8001 \
 	BACKEND_3=http://localhost:8002 \
 	./.bin/main $(WORKERS) $(REQUESTS)
+
+push: fmt
+	git push
