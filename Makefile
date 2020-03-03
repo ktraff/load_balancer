@@ -13,8 +13,8 @@ test:
 
 fmt:
 	go fmt ./...
-	git add .
-	git commit -m "formatting"
+	-git add .
+	-git commit -m "formatting"
 
 start_backend:
 	cd backend && docker-compose up --detach --remove-orphans
