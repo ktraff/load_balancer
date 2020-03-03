@@ -9,9 +9,9 @@ import (
 )
 
 type Request struct {
-	http_req        *http.Request
-	output          chan http.Response
-	response_writer http.ResponseWriter
+	http_req        *http.Request        // The incoming http request
+	output          chan http.Response   // The channel for receiving the response from the worker pool
+	response_writer http.ResponseWriter  // The response writer used to communicate back to the client
 }
 
 func NewRequest(http_req *http.Request, r http.ResponseWriter) Request {
@@ -23,7 +23,10 @@ func NewRequest(http_req *http.Request, r http.ResponseWriter) Request {
 }
 
 func (r Request) Respond() {
+	// Wait to receive a response from the worker pool
 	resp := <-r.output
+
+	// Relay the response back to the client
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {

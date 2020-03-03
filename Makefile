@@ -3,6 +3,7 @@
 WORKERS=100
 REQUESTS_PER_WORKER=5
 LOAD_REQUESTS=1000
+LOAD_CONCURRENT_REQUESTS=5
 
 build:
 	rm -rf .bin
@@ -36,4 +37,4 @@ push: fmt
 	git push
 
 load_test:
-	ab -n $(LOAD_REQUESTS) -c 5 http://localhost:8080/
+	ab -n $(LOAD_REQUESTS) -c $(LOAD_CONCURRENT_REQUESTS) http://localhost:8080/

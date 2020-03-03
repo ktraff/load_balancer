@@ -6,10 +6,13 @@ import (
 	"github.com/ktraff/load_balancer"
 )
 
+// A list of workers.  We'll use a heap to respond to requests based
+// on the worker that is the least busy.
 type Pool []*Worker
 
 type Balancer struct {
 	pool Pool
+	// Used to update the worker when a request has been processed
 	done chan *Worker
 }
 
@@ -22,12 +25,13 @@ func NewBalancer(numWorkers int, requestBufferSize int) *Balancer {
 	}
 	backends := load_balancer.GetBackends()
 	if len(*backends) == 0 {
-		panic("No backends configured")
+		panic("No backends have been configured!")
 	}
 	for i := 1; i <= numWorkers; i++ {
+		// Randomly assign a backend to a worker.
 		backend := (*backends)[(i-1)%len(*backends)]
 		worker := NewWorker(i, requestBufferSize, backend)
-		fmt.Println(fmt.Sprintf("Creating # %v", worker))
+		fmt.Println(fmt.Sprintf("Creating %v", worker))
 		heap.Push(&balancer.pool, &worker)
 		go worker.work(balancer.done)
 	}
@@ -77,6 +81,8 @@ func (p *Pool) Swap(i, j int) {
 	pool[j].index = j
 }
 
+// The worker with the smallest number of pending requests will bubble
+// to the top of the heap.
 func (p Pool) Less(i, j int) bool {
 	return p[i].pending < p[j].pending
 }
@@ -90,7 +96,7 @@ func (b *Balancer) dispatch(req *Request) {
 	heap.Push(&b.pool, least_loaded_worker)
 }
 
-// Job is complete; update heap
+// Job is complete, update the pool and the worker to reflect this.
 func (b *Balancer) completed(worker *Worker) {
 	worker.pending--
 	heap.Remove(&b.pool, worker.index)

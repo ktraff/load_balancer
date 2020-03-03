@@ -10,7 +10,9 @@ import (
 )
 
 func main() {
-	work_channel := make(chan *lib.Request)
+    // All workers in the pool will subscribe to this channel to process incoming requests
+    work_channel := make(chan *lib.Request)
+    // Configure the number of concurrent workers
 	num_workers := 10
 	num_requests_per_worker := 5
 	if len(os.Args) > 1 {

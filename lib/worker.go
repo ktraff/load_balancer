@@ -31,7 +31,7 @@ func NewWorker(id, reqBufferSize int, backend url.URL) Worker {
 }
 
 func (w *Worker) work(done chan *Worker) {
-	fmt.Println("Beginning work")
+	fmt.Println("Beginning to work: ", *w)
 	for {
 		req := <-w.requests
 		fmt.Println(fmt.Sprintf("Processing a request: %v", req.http_req.URL.String()))
@@ -48,12 +48,15 @@ func (w *Worker) forward_request(req *http.Request, requestor_chan chan http.Res
 		}
 	}()
 
+	// Create a request to be forwarded
 	url := fmt.Sprintf("%v%v", w.backend.String(), req.URL.Path)
 	fmt.Println(fmt.Sprintf("Forwarding request: %v", url))
 	outgoing_req, err := http.NewRequest(req.Method, url, strings.NewReader(""))
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Error while creating forwarded request (%v): %v", req, err))
 	}
+
+	// Send the request and return the results to the proper channels
 	resp, err := w.client.Do(outgoing_req)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Error while forwarding request (%v): %v", req, err))
