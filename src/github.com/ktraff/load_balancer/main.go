@@ -26,9 +26,9 @@ func main() {
 	// Start an HTTP listener that handles all traffic
 	h1 := func(w http.ResponseWriter, http_req *http.Request) {
 		fmt.Println(fmt.Sprintf("Incoming request: %v", http_req))
-        req := lib.NewRequest(http_req, w)
-        work_channel <- &req
-        req.Respond()
+		req := lib.NewRequest(http_req, w)
+		work_channel <- &req
+		req.Respond()
 	}
 	http.HandleFunc("/", h1)
 	fmt.Println("Serving on port 8080")
